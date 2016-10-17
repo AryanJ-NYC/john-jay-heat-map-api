@@ -7,13 +7,5 @@ const config = require('./config.js'),
         password: config.DB_PW
       });
 
-connection.connect(function (err) {
-  if (err) {
-    console.error('Error connecting: ' + err.stack);
-    return;
-  }
-
-  console.log(`Connected as id ${connection.threadId}`);
-});
-
-module.exports = connection;
+exports.connection = connection;
+exports.LIMIT = 500;
