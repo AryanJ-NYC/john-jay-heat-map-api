@@ -1,5 +1,6 @@
-const config = require('./config.js'),
+const config = require('./config'),
       mysql = require('mysql'),
+
       connection = mysql.createConnection({
         host: '149.4.68.217',
         user: config.DB_READ_USER,

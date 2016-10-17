@@ -4,7 +4,6 @@ const express = require('express'),
       database = require('./config/database.js'),
       connection = database.connection,
       DB_LIMIT = database.LIMIT,
-      squel = require('squel'),
       port = process.env.PORT || 8000;
 
 app.use(function (err, req, res, next) {
@@ -12,19 +11,16 @@ app.use(function (err, req, res, next) {
   res.json({ error: { message: err.message }});
 });
 
-app.get('/api/weather', function (req, res) {
-  let weatherQuery = squel.select().from('weather').limit(DB_LIMIT).toString();
-  connection.query(weatherQuery, function (err, rows) {
-    if (err) throw err;
+const routes = require('./routes/routes');
 
-    res.json(rows);
-  });
-});
+app.use('/api', routes);
 
 app.listen(port, function () {
   console.log(`App running on port: ${port}`);
 });
 
 process.on('SIGTERM', function () {
-  connection.end();
+  connection.end(function () {
+    console.log('Connection to database terminated.');
+  });
 });
