@@ -4,7 +4,6 @@ const express = require('express'),
       cors = require('cors'),
       database = require('./config/database.js'),
       connection = database.connection,
-      DB_LIMIT = database.LIMIT,
       port = process.env.PORT || 8000;
 
 app.use(cors());
