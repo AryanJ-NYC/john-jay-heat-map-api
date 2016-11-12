@@ -11,6 +11,7 @@ router.get('/', function (req, res) {
                           .field('stime')
                           .field('temp')
                           .toString();
+
   connection.query(weatherQuery, function (err, rows) {
     if (err) throw err;
 
