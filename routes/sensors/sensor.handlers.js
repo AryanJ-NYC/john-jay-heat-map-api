@@ -3,6 +3,11 @@ const request = require('request'),
       qs = require('qs'),
       env = require('../../config/config');
 
+/**
+ * Pads single-digit numbers with zero on left; returns otherwise
+ * @param {string} numberString - must be a number.
+ * @returns {string} two-digit string
+ */
 function zeroFill(numberString) {
   if (isNaN(numberString))
     throw Error('Requires number');
@@ -11,15 +16,21 @@ function zeroFill(numberString) {
 }
 
 module.exports.getSensorData = function (req, res) {
-  let sensorNumber = req.params.sensorNo;
-  let url = `https://www.cisdd.org/bpl/reporting/dataexport.php?idnum=${sensorNumber}&objtype=sensor&callback=`;
+  const sensorNumber = req.params.sensorId;
+  const url = `https://www.cisdd.org/bpl/reporting/dataexport.php?idnum=${sensorNumber}&objtype=sensor&callback=`;
+
   request.post({
       url: url,
       form: qs.stringify(`username=${env.BPL_READ_USER}&password=${env.BPL_PW}&submit=Submit`)
     },
     function (error, response, body) {
+      if (error) {
+        console.error(error.message);
+        return;
+      }
+
       body = body.replace(/[();]/g, ''); // remove parentheses and semicolons
-      let data = JSON.parse(body).map(function (datum) {
+      let sensorData = JSON.parse(body).map(function (datum) {
         const dateObject = new Date(datum[0]),
               year = dateObject.getFullYear(),
               month = zeroFill(dateObject.getMonth() + 1),
@@ -31,6 +42,6 @@ module.exports.getSensorData = function (req, res) {
         return { 'date': formattedDate, 'value': datum[1] }
       });
 
-      res.json({ data: data });
+      res.json({ data: sensorData });
     });
 };

@@ -2,8 +2,8 @@
 const express = require('express'),
       app = express(),
       cors = require('cors'),
-      database = require('./config/database.js'),
-      connection = database.connection,
+      mySqlDB = require('./config/databases/mySqlConnection.js'),
+      mySqlConnectionPool = mySqlDB.connectionPool,
       port = process.env.PORT || 8000;
 
 app.use(cors());
@@ -23,7 +23,7 @@ app.listen(port, function () {
 });
 
 process.on('SIGTERM', function () {
-  connection.end(function () {
-    console.log('Connection to database terminated.');
+  mySqlConnectionPool.end(function () {
+    console.log('Connection to mySqlDB terminated.');
   });
 });

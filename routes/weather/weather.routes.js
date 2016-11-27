@@ -1,8 +1,8 @@
 'use strict';
 const router = require('express').Router(),
       squel = require('squel'),
-      database = require('../../config/database.js'),
-      connection = database.connection;
+      database = require('../../config/databases/mySqlConnection.js'),
+      connection = database.connectionPool;
 
 router.get('/', function (req, res) {
   let weatherQuery = squel.select()
